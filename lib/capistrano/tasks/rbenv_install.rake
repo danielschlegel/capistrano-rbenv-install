@@ -13,7 +13,7 @@ include Capistrano::DSL::RbenvInstall
 namespace :rbenv do
   desc 'Install rbenv'
   task :install_rbenv do
-    on roles fetch(:rbenv_roles), reject: lambda { |h| h.properties.no_release } do
+    on release_roles fetch(:rbenv_roles) do
       next if test "[ -d #{fetch(:rbenv_path)} ]"
       execute :git, :clone, rbenv_repo_url, fetch(:rbenv_path)
     end
@@ -21,7 +21,7 @@ namespace :rbenv do
 
   desc 'Install ruby build - rbenv plugin'
   task :install_ruby_build do
-    on roles fetch(:rbenv_roles), reject: lambda { |h| h.properties.no_release } do
+    on release_roles fetch(:rbenv_roles) do
       next if test "[ -d #{rbenv_ruby_build_path} ]"
       execute :git, :clone, ruby_build_repo_url, rbenv_ruby_build_path
     end
@@ -29,7 +29,7 @@ namespace :rbenv do
 
   desc 'Install ruby'
   task :install_ruby do
-    on roles fetch(:rbenv_roles), reject: lambda { |h| h.properties.no_release } do
+    on release_roles fetch(:rbenv_roles) do
       next if test "[ -d #{fetch(:rbenv_ruby_dir)} ]"
       execute rbenv_bin_executable_path, :install, fetch(:rbenv_ruby)
     end
@@ -37,7 +37,7 @@ namespace :rbenv do
 
   desc 'Install bundler gem'
   task :install_bundler do
-    on roles fetch(:rbenv_roles), reject: lambda { |h| h.properties.no_release } do
+    on release_roles fetch(:rbenv_roles) do
       next if test :gem, :query, '--quiet --installed --name-matches ^bundler$'
       execute :gem, :install, :bundler, '--quiet --no-rdoc --no-ri'
     end
